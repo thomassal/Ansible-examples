@@ -1,0 +1,8 @@
+---
+- name: Transfer and execute a script
+  hosts: localhost
+  remote_user: thomas
+  sudo: yes
+  tasks:
+    - name: Tranfer the script
+      copy: src=hosts dest=/etc/ansible 

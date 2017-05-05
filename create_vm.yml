@@ -1,0 +1,48 @@
+---
+
+- name: Create VMware guest
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_prompt:
+    - name: "vcenter"
+      prompt: "vCenter hostname?"
+      default: "vcenter01.example.com"
+    - name: "user"
+      prompt: "Enter username"
+      private: no
+    - name: "pass"
+      prompt: "Enter password"
+      private: yes
+    - name: "template"
+      prompt: "Template?"
+      default: "linux-template.example.com_deb8"
+    - name: "cluster"
+      prompt: "Cluster?"
+      default: "cl03"
+    - name: "resource_pool"
+      prompt: "Resource pool?"
+      default: "/Resources/IT/IT Department/Linux Systems Team"
+
+  tasks:
+  - name: Make sure we have pip
+    become: true
+    apt: pkg=python-pip state=latest
+  - name: Install Python modules
+    become: true
+    pip: name={{ item }} state=latest
+    with_items:
+      - pysphere
+      - pyvmomi
+  - name: Deploy guest from template
+    vsphere_guest:
+      vcenter_hostname: "{{ vcenter }}"
+      username: "{{ user }}"
+      password: "{{ pass }}"
+      guest: "{{ guest }}"
+      from_template: yes
+      template_src: "{{ template }}"
+      cluster: "{{ cluster }}"
+      resource_pool: "{{ resource_pool }}"
+      validate_certs: no

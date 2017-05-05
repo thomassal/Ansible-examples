@@ -1,0 +1,47 @@
+---
+
+- name: Create VMware guest
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+    - name: Deploy guest
+      vsphere_guest:
+        vcenter_hostname: 10.78.60.63
+        username: root
+        password: 
+        guest: thomas_ansible
+        state: powered_on
+        vm_extra_config:
+          vcpu.hotadd: yes
+          mem.hotadd:  yes
+          notes: This is a test VM from ansible
+          #folder: MyFolder
+        vm_disk:
+          disk1:
+            size_gb: 10
+            type: thin
+            datastore: datastore1
+            # VMs can be put into folders. The value given here is either the full path
+            # to the folder (e.g. production/customerA/lamp) or just the last component
+            # of the path (e.g. lamp):
+            folder: thomas_ansible
+        vm_nic:
+          nic1:
+            type: vmxnet3
+            network: VLAN6
+            network_type: standard
+        vm_hardware:
+          memory_mb: 2048
+          num_cpus: 2
+          osid: rhel6_64Guest
+          scsi: paravirtual
+          vm_cdrom:
+            type: "iso"
+            iso_path: "datastore1/Images/rhel-server-6.6-x86_64-dvd.iso"
+        esxi:
+          datacenter: ha-datacenter
+          hostname: localhost.bytemobile.com
+        #old python
+        validate_certs: no

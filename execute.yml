@@ -1,0 +1,19 @@
+---
+- name: Transfer and execute a script
+  hosts: 10.78.6.193
+  remote_user: root
+  become: yes
+  tasks:
+    #- name: Add repository
+      #yum_repository:
+        #name: RedHat
+        #description: EPEL YUM repo
+        #file: yum.repos.d
+        #baseurl: file:///mnt/rh66
+        #gpgkey: file:///mnt/rh66/RPM-GPG-KEY-redhat-release
+        #gpgcheck: no
+    - name: Tranfer the script
+      copy: src=test.sh dest=/root mode=0777
+    - name: Execute the script
+      command: sh /root/test.sh
+#ansible-playbook execute.yml -s -k -u root
